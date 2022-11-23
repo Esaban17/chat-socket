@@ -1,4 +1,11 @@
-const io = require("socket.io")(8800, {
+const http = require('http');
+const express = require("express");
+const app = express();
+app.set('port', process.env.PORT || 8800);
+
+var server = http.createServer(app);
+
+const io = require("socket.io")(server, {
   cors: {
     origin: "https://frontend-two-pink.vercel.app",
   },
@@ -36,4 +43,12 @@ io.on("connection", (socket) => {
       io.to(user.socketId).emit("recieve-message", data);
     }
   });
+});
+
+app.get("/", (req, res) => {
+  res.send("Socket Corriendo!!")
+})
+
+app.listen(app.get('port'), () => {
+  console.log(`Server Socket Running On Port ${app.get('port')}`);
 });
